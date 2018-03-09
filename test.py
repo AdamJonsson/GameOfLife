@@ -123,7 +123,6 @@ class Screen:
         self.canvas.move(ALL, (-1 * self.offsetX), (-1 * self.offsetY))
 
     def zoomScreen(self, amount):
-        print(self.offsetX)
         self.canvas.scale(ALL, self.width / 2, self.height / 2, amount, amount)
 
 

@@ -33,7 +33,6 @@ class Screen:
     def updateScreenOnResize(self, event):
         self.height = event.height
         self.width = event.width
-        print(self.width)
 
     def createCanvas(self):
         self.canvas = Canvas(self.root, width=self.width, height=self.height, bg="#202020", highlightthickness=0)
@@ -62,12 +61,6 @@ class Screen:
         for i in range(0, self.worldSize + 1):
             line = self.canvas.create_line(self.gridSize * i, 0, self.gridSize * i, worldSizeInPx, fill="#335566")
             self.hGrid.append(line)
-
-        # for i in range(500):
-        #     xPos = random.randint(0, 100) * self.gridSize
-        #     yPos = random.randint(0, 100) * self.gridSize
-        #     mycolor = '#%02x%02x%02x' % (50+ random.randint(0, 100), 200 + random.randint(0, 50), 200 + random.randint(0, 50)) 
-        #     rect = self.canvas.create_rectangle(xPos, yPos, xPos + self.gridSize, yPos + self.gridSize, fill=mycolor, outline="")
 
     def updateCanvasOffset(self):
         """
@@ -146,10 +139,11 @@ class Screen:
         self.gridMode = mode
 
     def zoomCanvasScreen(self, amount):
-        self.totalZoom *= amount
-        if(self.totalZoom < 0.5):
-            self.changeGridStatus(False)
-        else:
-            self.changeGridStatus(True)
-        self.canvas.scale(ALL, int(self.width/2), int(self.height/2), amount, amount)
+        if(self.totalZoom * amount < 5 and self.totalZoom * amount > 0.05):
+            self.totalZoom *= amount
+            if(self.totalZoom < 0.4):
+                self.changeGridStatus(False)
+            else:
+                self.changeGridStatus(True)
+            self.canvas.scale(ALL, int(self.width/2), int(self.height/2), amount, amount)
 

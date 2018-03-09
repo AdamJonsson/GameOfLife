@@ -25,7 +25,6 @@ class Keyboard:
         self.__checkForShortCommands()
 
     def __changeKeyStatus(self, event, mode):
-        print(event.keycode)
 
         if(event.keysym == "minus"):
             self.subtractKey = mode
