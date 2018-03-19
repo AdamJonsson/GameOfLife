@@ -13,8 +13,8 @@ class Cell:
             self.createVisualCell()
     
     def createVisualCell(self):
-        xPos = self.x * self.screen.gridSize * self.screen.totalZoom + self.screen.realOffsetX 
-        yPos = self.y * self.screen.gridSize * self.screen.totalZoom + self.screen.realOffsetY
+        xPos = self.x * self.screen.gridSize * self.screen.totalZoom + self.screen.topLeftBorderX 
+        yPos = self.y * self.screen.gridSize * self.screen.totalZoom + self.screen.topLeftBorderY
         xPosEnd = xPos + self.screen.gridSize * self.screen.totalZoom
         yPosEnd = yPos + self.screen.gridSize * self.screen.totalZoom
         self.rect = self.screen.canvas.create_rectangle(xPos, yPos, xPosEnd, yPosEnd, fill=self.color, outline="")

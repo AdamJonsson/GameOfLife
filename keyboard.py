@@ -48,7 +48,7 @@ class Keyboard:
         print(event.keycode, mode);
         if(event.keycode == 131074):
             self.shiftKey = mode
-        if(event.keycode == 10616834):
+        if(event.keycode == 10616834 or event.keycode == 131330):
             self.shiftKey = True
 
     def __checkForShortCommands(self):

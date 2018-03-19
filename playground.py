@@ -61,7 +61,6 @@ class Playground:
         return sum
 
     def updateCells(self):
-
         for cellIndex in range(len(self.cells)):
             cell = self.cells[cellIndex]
             xPos = cell.x
