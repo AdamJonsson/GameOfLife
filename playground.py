@@ -81,7 +81,9 @@ class Playground:
 
         cellsToDelete = []
         for cell in self.cells:
-            if(cell.numOfNeighbor > 3 or cell.numOfNeighbor < 2 or (cell.numOfNeighbor == 2 and cell.dead == True)):
+            if(cell.x <= 0 or cell.y <= 0 or cell.x >= self.screen.worldSize or cell.y >= self.screen.worldSize):
+                cellsToDelete.append(cell)
+            elif(cell.numOfNeighbor > 3 or cell.numOfNeighbor < 2 or (cell.numOfNeighbor == 2 and cell.dead == True)):
                 cellsToDelete.append(cell)
             elif(cell.numOfNeighbor == 3 and cell.dead == True):
                 cell.makeAlive()

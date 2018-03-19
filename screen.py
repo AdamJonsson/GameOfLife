@@ -27,7 +27,7 @@ class Screen:
 
         self.setTitle()
         self.createCanvas()
-        self.hoverBlock = self.canvas.create_rectangle(0, 0, self.gridSize, self.gridSize, fill="red")
+        self.hoverBlock = self.canvas.create_rectangle(0, 0, self.gridSize, self.gridSize, fill="#00ffff")
         self.canvas.bind("<Configure>", self.updateScreenOnResize)
     
     def updateScreenOnResize(self, event):
@@ -54,12 +54,14 @@ class Screen:
         worldSizeInPx = self.gridSize * self.worldSize
         self.vGrid = []
         for i in range(0, self.worldSize + 1):
-            line = self.canvas.create_line(0, self.gridSize * i, worldSizeInPx, self.gridSize * i, fill="#333366")
+            color = '#%02x%02x%02x' % (0, 50 - int(i / self.worldSize * 50), int(i / self.worldSize * 100))
+            line = self.canvas.create_line(0, self.gridSize * i, worldSizeInPx, self.gridSize * i, fill=color)
             self.vGrid.append(line)
 
         self.hGrid = []
         for i in range(0, self.worldSize + 1):
-            line = self.canvas.create_line(self.gridSize * i, 0, self.gridSize * i, worldSizeInPx, fill="#335566")
+            color = '#%02x%02x%02x' % (0, 50 - int(i / self.worldSize * 50), int(i / self.worldSize * 100))
+            line = self.canvas.create_line(self.gridSize * i, 0, self.gridSize * i, worldSizeInPx, fill=color)
             self.hGrid.append(line)
 
     def updateCanvasOffset(self):
@@ -98,6 +100,11 @@ class Screen:
             self.offsetY -= self.width / 100
         if(self.keyboard.downKey):
             self.offsetY += self.width / 100
+
+        if(self.keyboard.shiftKey):
+            self.canvas.itemconfig(self.hoverBlock, state="normal")
+        else:
+            self.canvas.itemconfig(self.hoverBlock, state="hidden")
 
     def updateRealOffset(self):
         self.realOffsetX = self.canvas.coords(self.vGrid[0])[0]
