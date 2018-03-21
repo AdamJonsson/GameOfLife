@@ -5,16 +5,29 @@ import time
 
 class Screen:
     """
-        The tkinter window and the canvas. Controlls what is visual on the screen. 
+        The Tkinter window and the canvas. Controlls what is visual on the screen. 
 
         :param width: The width of the window.
         :param height: The height of the window.
         :param mouse: The mouse object.
         :param keyboard: The keyboard object.
-        :param keyboard: The root object.
+        :param root: The root object.
+
+        Attributes: 
+        totalZoom: Keeps track how much zoom the user currently have.
+        girdSize: The size of the one grid box in pixels.
+        gridMode: Keeps track if the grid is visual or note.
+        worldSize: The size of the world.
+        offsetX: The canvas offset in the x-axis
+        offsetY: The canvas offset in the y-axis
     """
     
     def __init__(self, width, height, mouse, keyboard, root):
+
+        """
+            Creating the canvas and other stuff
+        """
+
         self.root = root
         self.keyboard = keyboard
         self.mouse = mouse
@@ -28,44 +41,49 @@ class Screen:
         self.offsetX = self.worldSize/2 * self.gridSize; self.topLeftBorderX = 0; self.bottomRightBorderX = 0
         self.offsetY = self.worldSize/2 * self.gridSize; self.topLeftBorderY = 0; self.bottomRightBorderY = 0
 
-        self.setTitle()
+        self.setTitle("Game Of LIFE & DEATH!")
         self.createCanvas()
         self.hoverBlock = self.canvas.create_rectangle(0, 0, self.gridSize, self.gridSize, fill="#00ffff")
         self.canvas.bind("<Configure>", self.updateScreenOnResize)
     
     def updateScreenOnResize(self, event):
         """
-            Getting the new size of the window screen. Use this only with and configure bind frome tkinter.
+            Getting the new size of the window screen. Use this only with and configure bind from tkinter.
+            :return: (nothing)
         """
         self.height = event.height
         self.width = event.width
 
     def createCanvas(self):
         """
-            Creates a canavs where the playground is going to be renderd on. 
+            Creates a canvas where the playground is going to be rendered on. 
+            :return: (nothing)
         """
         self.canvas = Canvas(self.root, width=self.width, height=self.height, bg="#202020", highlightthickness=0)
         self.canvas.pack(expand=1, side=LEFT, fill=BOTH)
         self.canvas.create_rectangle(0, 0, self.worldSize*self.gridSize, self.worldSize*self.gridSize, fill="black")
 
-    def setTitle(self):
+    def setTitle(self, title):
         """
             Setting the window title.
+            :return: (nothing)
         """
-        self.root.title("Game Of LIFE & DEATH!")
+        self.root.title(title)
 
     def updateScreen(self):
         """
             Updates the all the objects and input that controlls the screen.
+            :return: (nothing)
         """
-        self.updateMouseInput()
-        self.updateKeyboardInput()
+        self.getMouseInput()
+        self.getKeyboardInput()
         self.updateRealOffset()
         self.checkOffsetBorder()
 
     def createCanvasGridLines(self):
         """
             Creates grid lines in the canvas. More easy to see the grid system the world is build upon.
+            :return: (nothing)
         """
         worldSizeInPx = self.gridSize * self.worldSize
         self.vGrid = []
@@ -80,9 +98,10 @@ class Screen:
             line = self.canvas.create_line(self.gridSize * i, 0, self.gridSize * i, worldSizeInPx, fill=color)
             self.hGrid.append(line)
 
-    def updateMouseInput(self):
+    def getMouseInput(self):
         """
             This method is handeling the input from the user so that the user can move the canvas.
+            :return: (nothing)
         """
 
         # Moves the content on the screen
@@ -91,7 +110,7 @@ class Screen:
         # Setting the hover position for the mouse.
         self.updateMouseGridPosition()
 
-        # Having the virutal pointer for the mouse
+        # Having the virtual pointer for the mouse
         hoverX = self.mouse.xGridPos * self.gridSize * self.totalZoom + self.topLeftBorderX
         hoverY = self.mouse.yGridPos * self.gridSize * self.totalZoom + self.topLeftBorderY
         self.canvas.coords(self.hoverBlock, hoverX, hoverY, hoverX + self.gridSize * self.totalZoom, hoverY + self.gridSize * self.totalZoom)
@@ -100,14 +119,16 @@ class Screen:
     def updateMouseGridPosition(self):
         """
             This is updating the (grid) position the mouse is hovering over. 
+            :return: (nothing)
         """
         hoverX = (int((self.mouse.xPos - self.topLeftBorderX) / (self.gridSize * self.totalZoom))) 
         hoverY = (int((self.mouse.yPos - self.topLeftBorderY) / (self.gridSize * self.totalZoom)))
         self.mouse.updateGridPosition(hoverX, hoverY)
 
-    def updateKeyboardInput(self):
+    def getKeyboardInput(self):
         """
             This method is handeling the keyboard input from the user so that the user can move and zoom.
+            :return: (nothing)
         """
 
         #Zooming
@@ -134,7 +155,8 @@ class Screen:
 
     def updateRealOffset(self):
         """
-            This function is updating the real offset. It is using some objects as refrences where the edge of the world is located. 
+            This function is updating the real offset. It is using some objects as reference where the edge of the world is located. 
+            :return: (nothing)
         """
         self.topLeftBorderX = self.canvas.coords(self.vGrid[0])[0]
         self.topLeftBorderY = self.canvas.coords(self.vGrid[0])[1]
@@ -143,7 +165,8 @@ class Screen:
 
     def checkOffsetBorder(self):
         """
-            Checks if the user is trying to go outside of the playground. If so, this funtion is moving back the player to where to playground is located. 
+            Checks if the user is trying to go outside of the playground. If so, this function is moving back the player to where to playground is located. 
+            :return: (nothing)
         """
         checkPrecision = 100
         correctionSpeed = 0.20
@@ -160,6 +183,9 @@ class Screen:
     def moveCanvasScreen(self, xPos, yPos):
         """
             Moves the screen = Moving all the objects on the canvas. 
+            :param xPos: The x-position to move the screen to.
+            :param yPos: The y-position to move the screen to.
+            :return: (nothing)
         """
         moveX = xPos - self.offsetX
         moveY = yPos - self.offsetY
@@ -170,7 +196,9 @@ class Screen:
 
     def changeGridStatus(self, mode):
         """
-            Hiding or showing the grid depedning on how much zoom the user is currenlty having. 
+            Hiding or showing the grid depending on how much zoom the user is currently having. 
+            :param mode: Change the gridMode to mode.
+            :return: (nothing)
         """
         if(mode):
             state = "normal"
@@ -186,6 +214,8 @@ class Screen:
     def zoomCanvasScreen(self, amount):
         """
             Zooms the canvas with some amount. 
+            :param mode: zooms with amount.
+            :return: (nothing)
         """
         if(self.totalZoom * amount < 5 and self.totalZoom * amount > 0.05):
             self.totalZoom *= amount
