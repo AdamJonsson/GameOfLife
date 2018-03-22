@@ -31,7 +31,7 @@ class Playground:
 			:return: (nothing)
 		"""
 		if(self.keyboard.spaceKey):
-			self.updateCells()
+			self.nextGeneration()
 		self.getMouseInput()
 
 
@@ -59,7 +59,7 @@ class Playground:
 
 	def deleteCell(self, cell):
 		"""
-			Delleting a cell from the cell-list.
+			Deleting a cell from the cell-list.
 			:param cell: The cell that is going to be delete.
 			:return: (nothing)
 		"""
@@ -105,7 +105,7 @@ class Playground:
 		"""
 		pass
 
-	def exportPlayground(self):
+	def exportPlayground(self, filepath):
 		"""
 			This function is exporting a playground.
 			:param filepath: The filepath to import the playground to. 
@@ -113,13 +113,25 @@ class Playground:
 		"""
 		pass
 
-	def checkNeighbor(self):
-		""" 
-			This function is check the 
+	def checkFileFormat(self, fileContent):
+		"""
+			Checks if the file has the right format for this program.
+			:param fileContent: The content of the file
+			:return: True if the file content is correct, false if not.
 		"""
 		pass
 
-	def updateCells(self):
+	def removeCells(self, cellArray):
+		"""
+			Deletes all the cells from the array and playground.
+			:param cellArray: The array of cells to delete.
+			:return: (nothing)
+		"""
+		for cell in cellArray:
+			cell.delete()
+			self.cells.remove(cell)
+
+	def nextGeneration(self):
 		"""
 			This method is updateing the cells to the next generation.
 			:return: (nothing)
@@ -154,7 +166,5 @@ class Playground:
 				cell.makeAlive()
 			cell.numOfNeighbor = 0
 
-		for cell in cellsToDelete:
-			cell.delete()
-			self.cells.remove(cell)
+		self.removeCells(cellsToDelete)
 
