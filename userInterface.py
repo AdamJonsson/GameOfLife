@@ -215,6 +215,10 @@ class UserInterface:
 
 
     def saveBox(self, title=None, fileName=None, dirName=None, fileExt=".txt", fileTypes=None, asFile=False):
+        """
+            Opens an savefile explorer. 
+        """
+
         if fileTypes is None:
             fileTypes = [('all files', '.*'), ('text files', '.txt')]
 
