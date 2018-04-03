@@ -28,36 +28,83 @@ class Mouse:
 
 
     def __getMousePosition(self, event):
+        """
+            Gets the new mouse position.
+            :param event: The mouse event.
+            :return: (nothing)
+        """
+
         self.xPos = event.x
         self.yPos = event.y
         if(self.leftButton):
             self.updateCurrentDragAmount()
 
     def __activateLeftButton(self, event):
+        """
+            Activates the left mouse button and begins to track the drag amount.
+            :param event: The mouse button event.
+            :return: (nothing)
+        """
+
         self.leftButton = True
         self.startDragAmountX = self.xPos
         self.startDragAmountY = self.yPos
 
     def __inactiveLeftButton(self, event):
+        """
+            Inactivates the left mouse button and get the drag amount
+            :param event: The mouse button event.
+            :return: (nothing)
+        """
+
         self.leftButton = False
         self.saveCurrentDragAmount()
 
     def __activateRightButton(self, event):
+        """
+            Activates the right mouse button.
+            :param event: The mouse button event.
+            :return: (nothing)
+        """
+
         self.rightButton = True
 
     def __inactivateRightButton(self, event):
+        """
+            Inactivates the left mouse button.
+            :param event: The mouse button event.
+            :return: (nothing)
+        """
+
         self.rightButton = False
 
     def updateCurrentDragAmount(self):
+        """
+            Kepping track how much the user is draging the mouse.
+            :return: (nothing)
+        """
+
         self.currentDragAmountX = self.xPos - self.startDragAmountX
         self.currentDragAmountY = self.yPos - self.startDragAmountY
         
     def saveCurrentDragAmount(self):
+        """
+            Kepping track how much the user is draging the mouse.
+            :return: (nothing)
+        """
+
         self.totalDragAmountX += self.currentDragAmountX
         self.totalDragAmountY += self.currentDragAmountY
         self.currentDragAmountX = 0
         self.currentDragAmountY = 0
 
     def updateGridPosition(self, xGridPos, yGridPos):
+        """
+            Updates what grid block the mouse is hovering over.
+            :param xGridPos: The grid block in the x-axis
+            :param yGridPos: The grid block in the y-axis
+            :return: (nothing)
+        """
+
         self.xGridPos = xGridPos
         self.yGridPos = yGridPos
