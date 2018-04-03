@@ -1,5 +1,22 @@
 class Keyboard:
 
+    """
+        This keeps track on all the keyboard inputs.
+
+        :param root: The root object.
+
+        Attributes: 
+            subtractKey: If the key is active or not
+            addKey: If the key is active or not
+            upKey: If the key is active or not
+            downKey: If the key is active or not
+            leftKey: If the key is active or not
+            rightKey: If the key is active or not
+            escapeKey: If the key is active or not
+            spaceKey: If the key is active or not
+            shiftKey: If the key is active or not
+    """
+
     def __init__(self, root):
         self.subtractKey = False
         self.addKey = False
@@ -19,15 +36,30 @@ class Keyboard:
         self.keyBindings = {}
 
     def __activateKey(self, event):
+        """
+            Make an key active
+            :param event: The key event
+            :return: (nothing)
+        """
         self.__changeKeyStatus(event, True)
         self.__checkForShortCommands()
 
     def __inactivateKey(self, event):
+        """
+            Make an key inactive
+            :param event: The key event
+            :return: (nothing)
+        """
         self.__changeKeyStatus(event, False)
         self.__checkForShortCommands()
 
     def __changeKeyStatus(self, event, mode):
-
+        """
+            Checks what key to make active/inactive depending on the keysys or keycode.
+            :param mode: If the key should be True or False
+            :param event: The key event.
+            :return: (Nothing)
+        """
 
         if(event.keysym in self.keyBindings and mode):
             self.keyBindings[event.keysym]()
@@ -57,8 +89,18 @@ class Keyboard:
             self.shiftKey = True
 
     def __checkForShortCommands(self):
+        """
+            This functions store every short command. 
+        """
         if(self.escapeKey):
             self.root.quit()
 
     def bindFunctionToKey(self, keyname, function):
+        """
+            Bind an function to an key. If the key is pressed the function is called.
+            
+            :param keyname: The name of the key.
+            :param function: The function to call if the key is pressed.
+            :return: (nothing)
+        """
         self.keyBindings[keyname] = function
