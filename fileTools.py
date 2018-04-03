@@ -14,3 +14,8 @@ def saveFileContent(filePath, content):
         :return: True if content is save, false if not.
     """
     pass
+
+def cleanString(string):
+    cleanString = string.strip()
+    cleanString = cleanString.replace('\n', ' ').replace('\r', '')
+    return cleanString

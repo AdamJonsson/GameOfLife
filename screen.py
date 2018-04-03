@@ -43,7 +43,7 @@ class Screen:
 
         self.setTitle("Game Of LIFE & DEATH!")
         self.createCanvas()
-        self.hoverBlock = self.canvas.create_rectangle(0, 0, self.gridSize, self.gridSize, fill="#00ffff")
+        self.hoverBlock = self.canvas.create_rectangle(0, 0, self.gridSize, self.gridSize, fill="#00ff00", outline="")
         self.canvas.bind("<Configure>", self.updateScreenOnResize)
     
     def updateScreenOnResize(self, event):
@@ -80,22 +80,23 @@ class Screen:
         self.updateRealOffset()
         self.checkOffsetBorder()
 
+        self.canvas.lift(self.hoverBlock)
+
     def createCanvasGridLines(self):
         """
             Creates grid lines in the canvas. More easy to see the grid system the world is build upon.
             :return: (nothing)
         """
         worldSizeInPx = self.gridSize * self.worldSize
+        gridColor = "#202020"
         self.vGrid = []
         for i in range(0, self.worldSize + 1):
-            color = '#%02x%02x%02x' % (0, 50 - int(i / self.worldSize * 50), int(i / self.worldSize * 100))
-            line = self.canvas.create_line(0, self.gridSize * i, worldSizeInPx, self.gridSize * i, fill=color)
+            line = self.canvas.create_line(0, self.gridSize * i, worldSizeInPx, self.gridSize * i, fill=gridColor)
             self.vGrid.append(line)
 
         self.hGrid = []
         for i in range(0, self.worldSize + 1):
-            color = '#%02x%02x%02x' % (0, 50 - int(i / self.worldSize * 50), int(i / self.worldSize * 100))
-            line = self.canvas.create_line(self.gridSize * i, 0, self.gridSize * i, worldSizeInPx, fill=color)
+            line = self.canvas.create_line(self.gridSize * i, 0, self.gridSize * i, worldSizeInPx, fill=gridColor)
             self.hGrid.append(line)
 
     def getMouseInput(self):
@@ -194,22 +195,28 @@ class Screen:
             self.offsetX = xPos
             self.offsetY = yPos
 
-    def changeGridStatus(self, mode):
+    def changeGridStatus(self, stepsBetweenLines):
         """
-            Hiding or showing the grid depending on how much zoom the user is currently having. 
-            :param mode: Change the gridMode to mode.
+            Change how many grids there are on the screen.
+            :param stepsToShowLine: The amount of steps between lines.
             :return: (nothing)
         """
-        if(mode):
-            state = "normal"
-        else:
-            state = "hidden"
-        if(mode != self.gridMode):
-            for vGrid in self.vGrid:
-                self.canvas.itemconfig(vGrid, state=state)
-            for hGrid in self.hGrid:
-                self.canvas.itemconfig(hGrid, state=state)
-        self.gridMode = mode
+
+        i = 0
+        for vGrid in self.vGrid:
+            i += 1
+            if(i % stepsBetweenLines == 0):
+                self.canvas.itemconfig(vGrid, state="normal")
+            else:
+                self.canvas.itemconfig(vGrid, state="hidden")
+
+        i = 0
+        for hGrid in self.hGrid:
+            i += 1
+            if(i % stepsBetweenLines == 0):
+                self.canvas.itemconfig(hGrid, state="normal")
+            else:
+                self.canvas.itemconfig(hGrid, state="hidden")
 
     def zoomCanvasScreen(self, amount):
         """
@@ -219,9 +226,14 @@ class Screen:
         """
         if(self.totalZoom * amount < 5 and self.totalZoom * amount > 0.05):
             self.totalZoom *= amount
-            if(self.totalZoom < 0.4):
-                self.changeGridStatus(False)
+
+            if(self.totalZoom < 0.1):
+                self.changeGridStatus(8)
+            elif(self.totalZoom < 0.2):
+                self.changeGridStatus(4)
+            elif(self.totalZoom < 0.4):
+                self.changeGridStatus(2)
             else:
-                self.changeGridStatus(True)
+                self.changeGridStatus(1)
             self.canvas.scale(ALL, int(self.width/2), int(self.height/2), amount, amount)
 

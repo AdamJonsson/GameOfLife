@@ -16,6 +16,8 @@ class Keyboard:
         self.root.bind('<KeyPress>', self.__activateKey)
         self.root.bind('<KeyRelease>', self.__inactivateKey)
 
+        self.keyBindings = {}
+
     def __activateKey(self, event):
         self.__changeKeyStatus(event, True)
         self.__checkForShortCommands()
@@ -25,6 +27,10 @@ class Keyboard:
         self.__checkForShortCommands()
 
     def __changeKeyStatus(self, event, mode):
+
+
+        if(event.keysym in self.keyBindings and mode):
+            self.keyBindings[event.keysym]()
 
         if(event.keysym == "minus"):
             self.subtractKey = mode
@@ -45,7 +51,6 @@ class Keyboard:
         if(event.keysym == "space"):
             self.spaceKey = mode
 
-        print(event.keycode, mode);
         if(event.keycode == 131074):
             self.shiftKey = mode
         if(event.keycode == 10616834 or event.keycode == 131330):
@@ -54,3 +59,6 @@ class Keyboard:
     def __checkForShortCommands(self):
         if(self.escapeKey):
             self.root.quit()
+
+    def bindFunctionToKey(self, keyname, function):
+        self.keyBindings[keyname] = function

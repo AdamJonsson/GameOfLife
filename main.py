@@ -6,6 +6,7 @@ from playground import Playground
 from userInterface import UserInterface
 import time
 
+#Creating 
 root = Tk()
 keyboard = Keyboard(root)
 mouse = Mouse(root)
@@ -19,5 +20,6 @@ def gameLoop():
     playground.updatePlayground()
     root.after(14, gameLoop)
 
-gameLoop()
-root.mainloop()
+if(__name__ == "__main__"):
+    gameLoop()
+    root.mainloop()

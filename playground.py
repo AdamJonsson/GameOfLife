@@ -1,4 +1,7 @@
 from cell import Cell
+from tkinter import messagebox
+import time
+import fileTools
 
 class Playground:
 
@@ -23,16 +26,29 @@ class Playground:
 		self.cells = []
 
 		self.clickSwitch = False
-		
+		self.autoGenerateMode = False
+		self.generation = 0
+		self.timeToCalcGeneration = 0
+
+		self.bindKeyboardKeysToFunctions()
+
+	
+	def bindKeyboardKeysToFunctions(self):
+		""" 
+			Binds diffrent functions to keyboard presses. 
+			:return: (nothing)
+		"""
+		self.keyboard.bindFunctionToKey("space", self.nextGeneration)
+
 
 	def updatePlayground(self):
 		""" 
 			Updates the playground. Checking for user input to interact with the playground.
 			:return: (nothing)
 		"""
-		if(self.keyboard.spaceKey):
-			self.nextGeneration()
 		self.getMouseInput()
+		if(self.autoGenerateMode):
+			self.nextGeneration()
 
 
 	def getMouseInput(self):
@@ -42,6 +58,11 @@ class Playground:
 		"""
 		xPos = self.mouse.xGridPos
 		yPos = self.mouse.yGridPos
+
+		if(self.getCellFromPosition(xPos, yPos)):
+			self.screen.canvas.itemconfig(self.screen.hoverBlock, fill='#ff0000')
+		else:
+			self.screen.canvas.itemconfig(self.screen.hoverBlock, fill='#00ff00')
 
 		if(self.mouse.leftButton and self.clickSwitch == False):
 			if(self.keyboard.shiftKey):
@@ -90,28 +111,84 @@ class Playground:
 				return cell
 		return False
 
+
 	def clearPlayground(self):
 		"""
 			Removes all the cells from the playground
 			:return: (nothing)
 		"""
-		pass
+
+		for cell in self.cells:
+			cell.delete()
+		self.cells = []
+		self.generation = 0
+
 
 	def importPlayground(self, filepath):
 		"""
 			This function is importing a playground.
 			:param filepath: The filepath to import the playground to. 
-			:return: Retruns a string if the method could load the playground or not.
+			:return: (nothing)
 		"""
-		pass
+
+		cellOutOfBound = False
+		avgXPos = 0
+		avgYPos = 0
+		fileWrite = open(filepath, "r")
+		cellPositions = fileWrite.readlines()
+
+		self.clearPlayground()
+		
+		for cellPos in cellPositions:
+
+			cleanCellPos = fileTools.cleanString(cellPos)
+			if(cleanCellPos == ""):
+				continue
+
+			try:
+				cellPosList = cleanCellPos.split()
+				cellXPos = int(cellPosList[0])
+				cellYPos = int(cellPosList[1])
+			except ValueError:
+				messagebox.showerror("Error: Wrong format", "The choosen file do not have the correct format. Be so kind to choose an other file.")
+				return
+
+			if(cellXPos > self.screen.worldSize or cellYPos > self.screen.worldSize or cellXPos < 0 or cellYPos < 0):
+				cellOutOfBound = True
+			else:
+				newCell = Cell(self.screen, cellXPos, cellYPos)
+				rectCellPos = self.screen.canvas.coords(newCell.rect)
+				avgXPos += rectCellPos[0]; avgYPos += rectCellPos[1]
+
+				self.cells.append(newCell)
+
+		if(cellOutOfBound):
+			messagebox.showwarning("Warning!", "Some cells are placed outside of the playground!")
+
+			
+
+
+		#Moving the user to where the cells are.
+		avgXPos /= len(cellPositions); avgYPos /= len(cellPositions)
+		self.screen.offsetX += avgXPos - self.screen.width/2
+		self.screen.offsetY += avgYPos - self.screen.height/2
+
 
 	def exportPlayground(self, filepath):
 		"""
 			This function is exporting a playground.
-			:param filepath: The filepath to import the playground to. 
-			:return: Retruns a string if the method could load the playground or not.
+			:param filepath: The filepath to export the playground to. 
+			:return: (nothing)
 		"""
-		pass
+		cellPositions = ""
+		for cell in self.cells:
+			if(cell.dead == False):
+				cellPositions += str(cell.x) + " " + str(cell.y) + "\n"
+		
+		fileWrite = open(filepath, "w")
+		fileWrite.write(cellPositions)
+		fileWrite.close()
+		
 
 	def checkFileFormat(self, fileContent):
 		"""
@@ -120,6 +197,7 @@ class Playground:
 			:return: True if the file content is correct, false if not.
 		"""
 		pass
+
 
 	def removeCells(self, cellArray):
 		"""
@@ -131,13 +209,18 @@ class Playground:
 			cell.delete()
 			self.cells.remove(cell)
 
+
 	def nextGeneration(self):
 		"""
-			This method is updateing the cells to the next generation.
+			This method is updating the cells to the next generation.
 			:return: (nothing)
 
 			Thanks to Martins for the idea to have modolu of the current posotion.
 		"""
+
+		startTime = int(round(time.time() * 100000))
+
+		self.generation += 1
 
 		for cellIndex in range(len(self.cells)):
 			cell = self.cells[cellIndex]
@@ -168,3 +251,5 @@ class Playground:
 
 		self.removeCells(cellsToDelete)
 
+		endTime = int(round(time.time() * 100000))
+		self.timeToCalcGeneration = (endTime - startTime)
