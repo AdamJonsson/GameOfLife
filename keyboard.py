@@ -83,10 +83,8 @@ class Keyboard:
         if(event.keysym == "space"):
             self.spaceKey = mode
 
-        if(event.keycode == 131074):
+        if(event.keysym == "z"):
             self.shiftKey = mode
-        if(event.keycode == 10616834 or event.keycode == 131330):
-            self.shiftKey = True
 
     def __checkForShortCommands(self):
         """
