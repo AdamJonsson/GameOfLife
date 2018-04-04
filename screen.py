@@ -45,6 +45,8 @@ class Screen:
         self.createCanvas()
         self.hoverBlock = self.canvas.create_rectangle(0, 0, self.gridSize, self.gridSize, fill="#00ff00", outline="")
         self.canvas.bind("<Configure>", self.updateScreenOnResize)
+
+        self.createCanvasGridLines()
     
     def updateScreenOnResize(self, event):
         """

@@ -13,7 +13,6 @@ mouse = Mouse(root)
 screen = Screen(500, 500, mouse, keyboard, root)
 playground = Playground(root, screen, mouse, keyboard)
 ui = UserInterface(root, screen, playground, mouse, keyboard, 250)
-screen.createCanvasGridLines()
 
 def gameLoop():
     screen.updateScreen()
