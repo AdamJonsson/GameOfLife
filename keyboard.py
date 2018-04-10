@@ -21,6 +21,7 @@ class Keyboard:
         """
             Creates all the attributes for the object.
         """
+
         self.subtractKey = False
         self.addKey = False
         self.upKey = False
@@ -46,6 +47,7 @@ class Keyboard:
         """
         self.__changeKeyStatus(event, True)
         self.__checkForShortCommands()
+        
 
     def __inactivateKey(self, event):
         """
@@ -55,6 +57,7 @@ class Keyboard:
         """
         self.__changeKeyStatus(event, False)
         self.__checkForShortCommands()
+
 
     def __changeKeyStatus(self, event, mode):
         """
@@ -89,12 +92,14 @@ class Keyboard:
         if(event.keysym == "z"):
             self.shiftKey = mode
 
+
     def __checkForShortCommands(self):
         """
             This functions store every short command. 
         """
         if(self.escapeKey):
             self.root.quit()
+            
 
     def bindFunctionToKey(self, keyname, function):
         """
