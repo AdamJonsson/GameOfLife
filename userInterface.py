@@ -120,7 +120,7 @@ class UserInterface:
         self.toControllPanelButton.pack()
 
         #intructionText = "Mouse + hold:\nLook around\n\nMouse + shift + click:\nPlace cell\n\n(+), (-):\nZoom the playground"
-        intructionText = "Welcome to Game Of Life!\n\nMouse + Hold: Moving around the playground.\n\nMouse + z + Click: Add / Delete a cell in the playground\n\n(+), (-): Zooming\n\nArrow keys: Moving around\n\n\nA cell is born if it has exactly three neighbors. Neighbors are counted horizontally, vertically or diagonally.\n\nA cell dies if it has fewer than two neighbors or if it has more than three neighbors."
+        intructionText = "Welcome to Game Of Life!\n\nMouse + Hold: Moving around the playground.\n\nMouse + z + Click: Add / Delete a cell in the playground\n\n(+), (-): Zooming\n\nArrow keys: Moving around\n\nSpace: Generate\n\n\nA cell is born if it has exactly three neighbors. Neighbors are counted horizontally, vertically or diagonally.\n\nA cell dies if it has fewer than two neighbors or if it has more than three neighbors."
         intructionLabel = Label(self.topWelcomeFrame, text=intructionText, anchor='w', justify=LEFT, bg=self.backgroundColor, wrap=175)
         intructionLabel.pack(fill=X)
 
@@ -168,7 +168,7 @@ class UserInterface:
             messagebox.showerror("Error: Input", "You can max do 1000 generation per click!")
             return
 
-        for i in range(amountOfGenerations):
+        for _ in range(amountOfGenerations):
             self.playground.nextGeneration()
 
 

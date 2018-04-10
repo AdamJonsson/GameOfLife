@@ -18,6 +18,9 @@ class Keyboard:
     """
 
     def __init__(self, root):
+        """
+            Creates all the attributes for the object.
+        """
         self.subtractKey = False
         self.addKey = False
         self.upKey = False
